@@ -17,7 +17,7 @@
     "url": "https://github.com/fcortesbio/poke-server/issues"
   },
   "homepage": "https://github.com/fcortesbio/poke-server#readme",
-  "description": "",
+  "description": "Poke-Server is a JavaScript-based server application that provides an API for accessing Pokémon data.",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -26,5 +26,6 @@
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.3",
     "morgan": "^1.10.0"
-  }
+  },
+  "devDependencies": {}
 }

@@ -33,16 +33,14 @@ Poke-Server is a JavaScript-based server application that provides an API for ac
 1. Start the server:
 
     ```bash
-    npm start # to-do
+    nodemon --watch src index.js
     ```
 
 2. Access the API at `http://localhost:4000`
 
 ## API Endpoints
 
-- `/pokemon` - Get a list of all Pokémon
-- `/pokemon/:id` - Get details of a specific Pokémon by ID
-- `/pokemon/name/:name` - Get details of a specific Pokémon by name
+ <!-- to-do -->
 
 ## Contributing
 
