@@ -27,8 +27,8 @@ app.use(
 // -- Routes --
 // Home route:
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
-  console.log("Successfully reached Home");
+  res.status(200).send("Hello, World!");
+  console.log("Successfully reached Home.");
 });
 
 // pokemonRouter:
@@ -37,6 +37,7 @@ app.use("/api/pokemon", pokemonRouter);
 // Health check:
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
+  console.log(`Successfully checked server health.`)
 });
 
 // -- Error Handling --
@@ -48,6 +49,12 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
+
+function validateConfig() {
+  if (!process.env.MONGODB_URI) {
+    throw new Error("Missing MONGODB_URI environment variable");
+  }
+}
 
 // -- MongoDB connection --
 async function connectToDatabase() {
@@ -88,6 +95,5 @@ startServer();
 
 ////// TO-DO list:
 // add route to reach createPokemonStatus controller
-// implement configuration validation
 // implement login/sign in system
 // Enhance error handling ~ error handling middleware could be enhanced to differentiate between operational errors and programming bugs, and potentially log more details or send structured error responses.
