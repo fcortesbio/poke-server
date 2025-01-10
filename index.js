@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 const morgan = require("morgan");
 require("dotenv").config();
+const pokemonRouter = require("./routes/pokemonStatus");
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
   console.log("Successfully reached Home");
 });
 
+app.use("/api/pokemon", pokemonRouter)
 
 // -- Error Handling --
 app.use((req, res, next) => {
