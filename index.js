@@ -11,14 +11,17 @@ app.set('port', PORT);
 
 // -- Middleware --
 app.use(helmet());
-app.use(morgan('combined', { skip: (req, res) => res.statusCode < 400 }));
 app.use(express.json());
+app.use(morgan('combined', { skip: (req, res) => res.statusCode < 400 })); 
 
 // -- Routes --
 app.get('/', (req, res) => {
   res.send('Hello, World!');
   console.log('Successfully reached Home');
 });
+
+
+
 
 // -- Error Handling --
 app.use((req, res, next) => {
@@ -40,6 +43,7 @@ async function connectToDatabase() {
   }
 }
 
+
 // -- Start the Server --
 async function startServer() {
   await connectToDatabase();
@@ -47,3 +51,15 @@ async function startServer() {
 }
 
 startServer();
+
+////// TO-DO list: 
+// define routes, 
+// define controllers, 
+// define model schema,
+// implement a graceful shutdown on MongoDB termination signals (e.g. SIGINT, SIGTERM)
+// implement configuration validation
+// implement login/sign in system
+// Enhance error handling ~ error handling middleware could be enhanced to differentiate between operational errors and programming bugs, and potentially log more details or send structured error responses.
+// Adding a health check endpoint (e.g., /health) can be useful for monitoring the status of the application.
+//  adding rate limiting to protect against DDoS attacks and cors middleware to handle cross-origin requests securely
+
