@@ -62,42 +62,42 @@ Version control is essential for managing a project's codebase, tracking changes
 
 Use the [`cd` command](https://dev.to/ccoveille/tips-the-power-of-cd-command-16b) to navigate to location where the project will be stored.
 
-    ```bash
-    cd /path/to/projects/
-    ```
+```bash
+cd /path/to/projects/
+```
 
 * **2. Log in to GitHub using the GitHub CLI**
 
 Use the following command to start the interactive set up and login into your DailyPay account.
 (If you don't have the GitHub CLI installed, you can download it from [https://cli.github.com/](https://cli.github.com/).)
 
-    ```bash
+```bash
     gh auth login
-    ```
+```
 
 * **3. Create a new GitHub repository**
 
 Once you're logged in, run the following command:
 
-    ```bash
+```bash
     gh repo create <repository-name> --public 
-    ```
+```
 Replace `<repository-name>` with the desired name for your repository. Use the --private option if you want to create a private repository.
 
 Your output should look like this:
 
-    ```bash
+```bash
     ✓ Created repository username/repository-name on GitHub
     https://github.com/username/repository-name
-    ```
+```
 
 * **4. Initialize a local Git Repository**
 
 Run the following command:
 
-    ```bash
+```bash
     git init poke-server
-    ```
+```
 This has a couple of effects that are worth mentioning:
 
     * Creates a directory within your current directory, called `poke-server` (or the directory name chosen) 
@@ -107,15 +107,15 @@ This has a couple of effects that are worth mentioning:
 
 After running the command, you should expect an output like this:
 
-    ```bash
+```bash
     Initialized empty Git repository in /path/to/projects/poke-server/.git/
-    ```
+```
 
 We'll continue working in the main repository folder, use the cd command again to enter this directory:
 
-    ``` bash
+``` bash
     cd poke-server
-    ```
+```
 
 The moment is good to briefly introduce the `ls` command, a tool available in Linux command line interfaces. It stands for *list*, and is used to list the contents of directories.
 
@@ -125,14 +125,14 @@ While the macOS has a built-in `ls` command, essentially performing the same fun
 
 For Linux, macOS, and Windows PowerShell, run:
 
-    ```bash
+```bash
     ls -la
-    ```
+```
 If using the Windows cmd, you can run with essentially the same functionality:
 
-    ```bash
+```bash
     dir /a /l
-    ```
+```
 Now you should see, the `.git` in the list of elements.
 
 * **5. Set the default branch to "main"**:
@@ -143,25 +143,26 @@ Now, imagine you can create parallel timelines where you can experiment with dif
 
 Run the following command:
 
-    ```bash
+```bash
     git branch -M main
-    ```
+```
 This will create our "main" branch, which will store the basic structure of our project. Later on, we'll be creating our first commit to this "main" branch, and in future tutorials, we'll learn how to create 'alternate' to work on specific features of our project, and when and how to merge them into our "main" branch.
 
 For now, run this command to check the current status of your git repository:
 
-    ```bash
+```bash
     git status
-    ```
+```
 Our expected output is:
 
-    ```bash
-    On branch main
+```bash
+On branch main
 
-    No commits yet
+No commits yet
 
-    nothing to commit (create/copy files and use "git add" to track)
-    ```
+nothing to commit (create/copy files and use "git add" to track)
+```
+
 There's only one step left before we can start building our code.
 
 * **6. Connect your local repository to the remote repository on GitHub**
@@ -184,9 +185,9 @@ The properties and configurations of a remote repository can be accessed via the
 
 Git provides an default remote pointer, called "origin"; it's currently empty, we will assign an url to this pointer by running:  
 
-    ```bash
+```bash
     git remote add origin https://github.com/username/repository-name
-    ```
+```
 (Replace your username and the name of the remote repository created in [step 3](url#Line))
 
 We're all set with our git repository. Now we're ready to start building our project code!
@@ -199,18 +200,18 @@ Command `mkdir` allows creating one or more new directories inside your current 
 
 Run the following command in your terminal:
 
-    ```bash
+```bash
     mkdir -p controllers routes models services 
-    ```
+```
 This command will create the following directory structure:
 
-    ```bash
+```bash
         ├── controllers
         ├── routes
         ├── models
         ├── services
         └── utils
-    ```
+```
 Here's a summary of what each directory should contain:
 
 * **`controllers`**: This directory will contain the controller files, which handle user input and update the model.
@@ -227,10 +228,10 @@ Use the `ls` or `dir` command to confirm that you have the correct structure in 
 
 Existing directories can be removed with the `rmdir` command, *e.g.*:
 
-    ```bash
+```bash
     mkdir unwanted # create a new 'unwanted directory'
     rmdir unwanted # delete the 'unwanted' directory
-    ```
+```
 
 * **Create initial files with `touch`**
 
@@ -239,9 +240,9 @@ Let's start building our initial application files!
 The `touch` command is a quick way to create empty files through our terminal.
 Run the following command to create the initial files for our project:
 
-    ```bash
+```bash
     touch README.md .env .gitignore index.js
-    ```
+```
 Here's a brief summary of what we'll use these files for:
 
 * `README.md`: A documentation file that provides information about the project, including how to set it up, how to use it, and a general overview of its functionality. It often includes sections for installation, usage examples, and contributing guidelines.
@@ -256,9 +257,9 @@ Run the `ls`/`dir` command to ensure our directories and folders have been creat
 
 The following output is expected:
 
-    ```bash
+```bash
     controllers  index.js  models  README.md  routes  services  utils
-    ```
+```
 
 ### 3. Node.js dependencies and project initialization
 
@@ -268,16 +269,16 @@ It suits to ensure you we a recent version Node.js installed in our local machin
 
 Run:
 
-    ```bash
+```bash
     node --version
-    ```
+```
 If you have `nvm` you can install (recommended) the **Latest Lont-Term Support (LTS)** version (current: v22.13.0);
 
 Run the following command:
 
-    ```bash
+```bash
     nvm install --lts
-    ```
+```
 This installs the most recent Long-Term Support version of Node.js, which generally prioritizes stability and extended support.
 
 * **Install the necessary Node packages**:
@@ -294,17 +295,17 @@ Here's a list of the modules we'll be using. We'll see in detail what each one i
 
 Run the following command lines in your terminal:
 
-    ```bash
+```bash
     npm install express dotenv mongoose morgan helmet cors
     npm install --save-dev nodemon 
-    ```
+```
 This will generate the /node_modules/ folder in your proyect, which will contain the dependencies needed for the project to work
 
 Once our modules are installed, let's initilize our project project:
 
-    ```bash
+```bash
     npm init -y
-    ```
+```
 Here's what the command does:
 
     * `npm init`: This is the standard command for initializing a new Node.js project and creating a package.json file. This file is essential for managing your project's metadata, dependencies, and scripts.
@@ -369,35 +370,35 @@ That's it! We've successfully created our MongoDB database using Atlas and obtai
 
 If you're working with VS Code as your IDE, you can use the command to open the working directory:
 
-    ```bash
+```bash
     code .
-    ```
+```
 
 Open `.env`:
 
-    ```bash
+```bash
     code .env
-    ```
+```
 
 Add our initial environment variables to `.env` and save:
 
-    ```plaintext
+```plaintext
     PORT=3000
     MDB_URI="your-mongodb-connection-string"
-    ```
+```
 
 Open `.gitignore`*
 
-    ```bash
+```bash
     code .gitignore
-    ```
+```
 
 Add the node modules folder, and `.env` to `.gitignore`:
 
-    ```plaintext
+```plaintext
     /node_modules/
     .env
-    ```
+```
 
 ### 6. Create the Express Server
 
@@ -415,19 +416,19 @@ In this step, we'll import our main modules to help us create our server (rememb
 
 Open `index.js`:
 
-    ```bash
+```bash
     code index.js
-    ```
+```
 
 We'll start building our server logic here. Let's start with importing our dependencies:
 
-    ```JavaScript
+```JavaScript
     const express = require('express');
     const mongoose = require('mongoose');
     const helmet = require('helmet');
     const morgan = require('morgan');
     require('dotenv').config();
-    ```
+```
 
 Here's a quick explanation of each module:
 
@@ -447,11 +448,11 @@ Note: Adding links to the official documentation for each module would be a help
 
 #### Configure the App
 
-    ```JavaScript
+```JavaScript
     const app = express();
     const PORT = process.env.PORT || 3000;
     app.set('port', PORT);
-    ```
+```
 
 #### Apply Middleware
 
@@ -461,12 +462,12 @@ In more technical terms, middleware is software that sits between an operating s
 
 In Express.js, `app.use()` is a fundamental method for incorporating middleware functions into our application's request-response cycle. Middleware functions have access to the request object (req), the response object (res), and the next function, allowing them to perform tasks like:
 
-    ```JavaScript
+```JavaScript
     // Security and logging
     app.use(helmet());
     app.use(morgan('combined', { skip: (req, res) => res.statusCode < 400 })); // Check the morgan documentation for more loggin options
     app.use(express.json());
-    ```
+```
 This code snippet applies three important middleware functions to our Express.js application:
 
 **1. `helmet()`**
@@ -499,16 +500,16 @@ By using these middleware functions, we add important security measures, logging
 
 #### Define our Home route in Routes
 
-    ```JavaScript
+```JavaScript
     app.get('/', (req, res) => {
       res.send('Hello, World!');
       console.log('Successfully reached Home');
     });
-    ```
+```
 
 #### Error Handling
 
-    ```JavaScript
+```JavaScript
     // 404 handler
     app.use((req, res, next) => {
       res.status(404).send('Resource not found');
@@ -519,33 +520,33 @@ By using these middleware functions, we add important security measures, logging
       console.error(err.stack);
       res.status(500).send('Something broke!');
     });
-    ```
+```
 
 #### Connect to MongoDB
 
-    ```JavaScript
+```JavaScript
     mongoose
       .connect(process.env.MONGODB_URI)
       .then(() => console.log('Connected to MongoDB cluster'))
       .catch((err) => console.error('MongoDB connection failed:', err));
-    ```
+```
 
 #### Start the Server
 
-    ```JavaScript
+```JavaScript
     app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
-    ```
+```
 
 ### 8. Run the Server
 
 Use nodemon to start the server and watch for changes:
 
-    ```bash
+```bash
     nodemon --watch src index.js
-    ```
+```
 The expected output should be something like this:
 
-    ```bash
+```bash
     [nodemon] 3.1.9
     [nodemon] to restart at any time, enter `rs`
     [nodemon] watching path(s): src
@@ -553,7 +554,7 @@ The expected output should be something like this:
     [nodemon] starting `node index.js`
     Server listening on port: 4000
     Connected to MongoDB cluster
-    ```
+```
 
 ### 9. Test the home route
 
