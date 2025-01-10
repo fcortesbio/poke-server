@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 const morgan = require("morgan");
 require("dotenv").config();
-const pokemonRouter = require("./routes/pokemonStatus");
+const pokemonRouter = require("./routes/pokemonRouter");
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
