@@ -10,7 +10,7 @@ const PokemonSchema = new Schema({
 
   encounter: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 
   catch: {
