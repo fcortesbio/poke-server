@@ -1,13 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const { test } = require("../controllers/pokemonController");
+// Import the 'test' controller function from the pokemonController
+const { test } = require("../controllers/pokemonController"); 
 
-router.get("/test", test);
-
+// Define the main API route (GET request to '/')
 router.get("/", (req, res) => {
-  res.send("Hello, Router!").status(200);
-  console.log("Succesfully reached Routes");
+  // Send a "Hello, Router!" response with a 200 (OK) status code
+  res.status(200).send("Hello, Router!"); 
+  console.log("Successfully reached Routes"); 
 });
 
+// Define a route to the 'test' controller function (GET request to '/test')
+router.get("/test", test); 
+
+// Export router to be reached by index.js
 module.exports = router;
