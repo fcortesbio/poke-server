@@ -1,4 +1,3 @@
-// --- Imports ---
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -7,37 +6,44 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+
 app.set('port', PORT);
 
-// --- Middlewares ---
+// -- Middleware --
+app.use(helmet());
+app.use(morgan('combined', { skip: (req, res) => res.statusCode < 400 }));
 app.use(express.json());
-app.use(morgan('combined', {
-  skip: function(req, res){
-    return res.statusCode < 400
-  }}));
 
-// --- Routes ---
+// -- Routes --
 app.get('/', (req, res) => {
-  res.send('Hello, World!')
-  console.log('Succesfully reached Home')
-}); 
+  res.send('Hello, World!');
+  console.log('Successfully reached Home');
+});
 
-// -- error handling --
+// -- Error Handling --
 app.use((req, res, next) => {
-  // 404 handler
   res.status(404).send('Resource not found');
 });
 
 app.use((err, req, res, next) => {
-  // Error handler
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
 
-// --- Database connection ---
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB cluster'))
-  .catch((err) => console.error('MongoDB connection failed: ', err));
+// -- MongoDB connection --
+async function connectToDatabase() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('Connected to MongoDB cluster');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err);
+  }
+}
 
-app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+// -- Start the Server --
+async function startServer() {
+  await connectToDatabase();
+  app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+}
+
+startServer();
