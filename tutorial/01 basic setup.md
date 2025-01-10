@@ -309,7 +309,7 @@ Run the following command lines in your terminal:
 
 ```bash
     npm install express dotenv mongoose morgan helmet cors
-    npm install --save-dev nodemon 
+    npm install -g nodemon 
 ```
 
 This will generate the /node_modules/ folder in your proyect, which will contain the dependencies needed for the project to work
