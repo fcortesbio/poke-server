@@ -63,7 +63,7 @@ Version control is essential for managing a project's codebase, tracking changes
 Use the [`cd` command](https://dev.to/ccoveille/tips-the-power-of-cd-command-16b) to navigate to location where the project will be stored.
 
 ```bash
-cd /path/to/projects/
+    cd /path/to/projects/
 ```
 
 * **2. Log in to GitHub using the GitHub CLI**
@@ -82,6 +82,7 @@ Once you're logged in, run the following command:
 ```bash
     gh repo create <repository-name> --public 
 ```
+
 Replace `<repository-name>` with the desired name for your repository. Use the --private option if you want to create a private repository.
 
 Your output should look like this:
@@ -98,12 +99,13 @@ Run the following command:
 ```bash
     git init poke-server
 ```
+
 This has a couple of effects that are worth mentioning:
 
-    * Creates a directory within your current directory, called `poke-server` (or the directory name chosen) 
-    * Creates the  hidden `.git` directory inside `poke-server`, which stores all the metadata used by Git for tracking changes in your local repository
-    * Starts tracking changes, from this point, Git will keep a record of any additions, deletions, or modifications you make in this directory.
-    * Enables version control through the Git functions
+* Creates a directory within your current directory, called `poke-server` (or the directory name chosen)
+* Creates the  hidden `.git` directory inside `poke-server`, which stores all the metadata used by Git for tracking changes in your local repository
+* Starts tracking changes, from this point, Git will keep a record of any additions, deletions, or modifications you make in this directory.
+* Enables version control through the Git functions
 
 After running the command, you should expect an output like this:
 
@@ -128,11 +130,13 @@ For Linux, macOS, and Windows PowerShell, run:
 ```bash
     ls -la
 ```
+
 If using the Windows cmd, you can run with essentially the same functionality:
 
 ```bash
     dir /a /l
 ```
+
 Now you should see, the `.git` in the list of elements.
 
 * **5. Set the default branch to "main"**:
@@ -146,6 +150,7 @@ Run the following command:
 ```bash
     git branch -M main
 ```
+
 This will create our "main" branch, which will store the basic structure of our project. Later on, we'll be creating our first commit to this "main" branch, and in future tutorials, we'll learn how to create 'alternate' to work on specific features of our project, and when and how to merge them into our "main" branch.
 
 For now, run this command to check the current status of your git repository:
@@ -153,14 +158,15 @@ For now, run this command to check the current status of your git repository:
 ```bash
     git status
 ```
+
 Our expected output is:
 
 ```bash
-On branch main
+    On branch main
 
-No commits yet
+    No commits yet
 
-nothing to commit (create/copy files and use "git add" to track)
+    nothing to commit (create/copy files and use "git add" to track)
 ```
 
 There's only one step left before we can start building our code.
@@ -171,23 +177,24 @@ The structure we've created so far is known as a **local repository** since it l
 
 The properties and configurations of a remote repository can be accessed via the `git remote` command, which has a number of different useful properties:
 
-    * we can add more than one remote using the same syntax: `git remote add <name> <url>`
+* we can add more than one remote using the same syntax: `git remote add <name> <url>`
 
-    * the command `git remote` alone will list the names of all remotes available
-    
-    * a remote can also be renamed by running: `git remote rename <old-name> <new-name>`
-    
-    * to view the URLs of these remotes, run: `git remote -v`
-    
-    * existing remote URLs can also be modified with:  
-    
-    * to disconnect our local repository from a remote, use: `git remote remove <name>`
+* the command `git remote` alone will list the names of all remotes available
+
+* a remote can also be renamed by running: `git remote rename <old-name> <new-name>`
+
+* to view the URLs of these remotes, run: `git remote -v`
+
+* existing remote URLs can also be modified with:  
+
+* to disconnect our local repository from a remote, use: `git remote remove <name>`
 
 Git provides an default remote pointer, called "origin"; it's currently empty, we will assign an url to this pointer by running:  
 
 ```bash
     git remote add origin https://github.com/username/repository-name
 ```
+
 (Replace your username and the name of the remote repository created in [step 3](url#Line))
 
 We're all set with our git repository. Now we're ready to start building our project code!
@@ -203,6 +210,7 @@ Run the following command in your terminal:
 ```bash
     mkdir -p controllers routes models services 
 ```
+
 This command will create the following directory structure:
 
 ```bash
@@ -212,6 +220,7 @@ This command will create the following directory structure:
         ├── services
         └── utils
 ```
+
 Here's a summary of what each directory should contain:
 
 * **`controllers`**: This directory will contain the controller files, which handle user input and update the model.
@@ -243,6 +252,7 @@ Run the following command to create the initial files for our project:
 ```bash
     touch README.md .env .gitignore index.js
 ```
+
 Here's a brief summary of what we'll use these files for:
 
 * `README.md`: A documentation file that provides information about the project, including how to set it up, how to use it, and a general overview of its functionality. It often includes sections for installation, usage examples, and contributing guidelines.
@@ -272,6 +282,7 @@ Run:
 ```bash
     node --version
 ```
+
 If you have `nvm` you can install (recommended) the **Latest Lont-Term Support (LTS)** version (current: v22.13.0);
 
 Run the following command:
@@ -279,6 +290,7 @@ Run the following command:
 ```bash
     nvm install --lts
 ```
+
 This installs the most recent Long-Term Support version of Node.js, which generally prioritizes stability and extended support.
 
 * **Install the necessary Node packages**:
@@ -299,6 +311,7 @@ Run the following command lines in your terminal:
     npm install express dotenv mongoose morgan helmet cors
     npm install --save-dev nodemon 
 ```
+
 This will generate the /node_modules/ folder in your proyect, which will contain the dependencies needed for the project to work
 
 Once our modules are installed, let's initilize our project project:
@@ -306,11 +319,12 @@ Once our modules are installed, let's initilize our project project:
 ```bash
     npm init -y
 ```
+
 Here's what the command does:
 
-    * `npm init`: This is the standard command for initializing a new Node.js project and creating a package.json file. This file is essential for managing your project's metadata, dependencies, and scripts.
+* `npm init`: This is the standard command for initializing a new Node.js project and creating a package.json file. This file is essential for managing your project's metadata, dependencies, and scripts.
 
-    * `-y` (or `--yes`): This flag tells npm to automatically accept all the default values for the prompts that npm init usually asks (like package name, version, description, etc.).
+* `-y` (or `--yes`): This flag tells npm to automatically accept all the default values for the prompts that npm init usually asks (like package name, version, description, etc.).
 
 ### 4. Create a MongoDB database
 
@@ -468,6 +482,7 @@ In Express.js, `app.use()` is a fundamental method for incorporating middleware 
     app.use(morgan('combined', { skip: (req, res) => res.statusCode < 400 })); // Check the morgan documentation for more loggin options
     app.use(express.json());
 ```
+
 This code snippet applies three important middleware functions to our Express.js application:
 
 **1. `helmet()`**
@@ -544,6 +559,7 @@ Use nodemon to start the server and watch for changes:
 ```bash
     nodemon --watch src index.js
 ```
+
 The expected output should be something like this:
 
 ```bash
