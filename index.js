@@ -5,7 +5,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
-const pokemonRouter = require("./routes/pokemonRouter");
+const pokemonRouter = require("./routes/pokemonRouter"); // paths 
+const getRouteNumber = require("./services/getMapRouteNumber"); // get Kanto map-route numbers
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -37,7 +38,7 @@ app.use("/api/pokemon", pokemonRouter);
 // Health check:
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
-  console.log(`Successfully checked server health.`)
+  console.log(`Successfully checked server health.`);
 });
 
 // -- Error Handling --
@@ -66,17 +67,42 @@ async function connectToDatabase() {
   }
 }
 
+// -- Periodic Map Route check --
+function scheduleRouteCheck() {
+  let currentRoute = getRouteNumber();
+  console.log(`Initial route number: ${currentRoute}`);
+
+  const checkAndLogRoute = () => {
+    const newRoute = getRouteNumber();
+    if (newRoute !== currentRoute) {
+      currentRoute = newRoute;
+      console.log(`Route changed to: ${currentRoute}`);
+    }
+  };
+
+  // Check every hour (3600000 ms) and on specific times
+  setInterval(() => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours === 0 || hours === 6 || hours === 12 || hours === 18) {
+      checkAndLogRoute();
+    }
+  }, 3600000);
+}
+
 // -- Start the Server --
 async function startServer() {
+  validateConfig(); // Validate environment variables
   await connectToDatabase();
-  app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Server listening on port: ${PORT}`);
+    scheduleRouteCheck(); // Schedule route checks after server starts
+  });
 }
 
 // -- Graceful Shutdown --
 async function gracefulShutdown(signal) {
-  console.log(
-    `Received ${signal}. Closing MongoDB connection and shutting down server...`
-  );
+  console.log(`Received ${signal}. Closing MongoDB connection and shutting down server...`);
   try {
     await mongoose.connection.close();
     console.log("MongoDB connection closed.");
@@ -92,8 +118,3 @@ process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 // Start the server
 startServer();
-
-////// TO-DO list:
-// add route to reach createPokemonStatus controller
-// implement login/sign in system
-// Enhance error handling ~ error handling middleware could be enhanced to differentiate between operational errors and programming bugs, and potentially log more details or send structured error responses.
