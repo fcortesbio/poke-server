@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   console.log("Successfully reached Home");
 });
 
-app.use("/api/pokemon", pokemonRouter)
+app.use("/api/pokemon", pokemonRouter) // routes/pokemonStatus
 
 // -- Error Handling --
 app.use((req, res, next) => {
