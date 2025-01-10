@@ -5,8 +5,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 require("dotenv").config();
-const pokemonRouter = require("./routes/pokemonRouter"); // paths 
-const getRouteNumber = require("./services/getMapRouteNumber"); // get Kanto map-route numbers
+const pokemonRouter = require("./routes/pokemonRouter");
+const getRouteNumber = require("./services/getMapRouteNumber");
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -18,27 +18,28 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
 app.use(cors());
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 50,
-  })
-);
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
+
+// Global variable to store the current route number
+let currentRoute = getRouteNumber();
 
 // -- Routes --
-// Home route:
 app.get("/", (req, res) => {
   res.status(200).send("Hello, World!");
   console.log("Successfully reached Home.");
 });
 
-// pokemonRouter:
+// Expose current route via API
+app.get("/route", (req, res) => {
+  res.status(200).json({ route: currentRoute });
+  console.log(`Returned route number: ${currentRoute} to client.`);
+});
+
 app.use("/api/pokemon", pokemonRouter);
 
-// Health check:
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
-  console.log(`Successfully checked server health.`);
+  console.log("Successfully checked server health.");
 });
 
 // -- Error Handling --
@@ -69,8 +70,7 @@ async function connectToDatabase() {
 
 // -- Periodic Map Route check --
 function scheduleRouteCheck() {
-  let currentRoute = getRouteNumber();
-  console.log(`Initial route number: ${currentRoute}`);
+  console.log(`Current map route number: ${currentRoute}`);
 
   const checkAndLogRoute = () => {
     const newRoute = getRouteNumber();
@@ -80,23 +80,22 @@ function scheduleRouteCheck() {
     }
   };
 
-  // Check every hour (3600000 ms) and on specific times
   setInterval(() => {
     const now = new Date();
     const hours = now.getHours();
     if (hours === 0 || hours === 6 || hours === 12 || hours === 18) {
       checkAndLogRoute();
     }
-  }, 3600000);
+  }, 3600000); // Check every hour
 }
 
 // -- Start the Server --
 async function startServer() {
-  validateConfig(); // Validate environment variables
+  validateConfig();
   await connectToDatabase();
   app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`);
-    scheduleRouteCheck(); // Schedule route checks after server starts
+    scheduleRouteCheck();
   });
 }
 
