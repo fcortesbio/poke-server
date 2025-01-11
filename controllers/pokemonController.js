@@ -94,3 +94,23 @@ exports.newPokemonEncounter = async (req, res) => {
     res.status(500).json({ err });
   }
 };
+
+// Export controller for deleting a pokemonStatus by pokedex_id
+exports.deletePokemonStatus = async (req, res) => {
+  try {
+    const { pokedex_id } = req.params; // Assuming the ID is passed as a route parameter
+    const userId = req.body.userId; // Assuming user ID is passed in the request body
+
+    const status = await pokemonStatus.findOneAndDelete({ pokedex_id, user: userId });
+
+    if (!status) {
+      return res.status(404).json({ message: "Pokemon status not found." });
+    }
+
+    res.status(200).json({ message: "Pokemon status deleted successfully." });
+  } catch (err) {
+    console.error(`Unable to delete Pokemon status: ${err}`);
+    res.status(500).json({ err });
+  }
+};
+

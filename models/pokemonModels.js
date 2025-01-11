@@ -9,13 +9,17 @@ const PokemonSchema = new Schema({
   },
 
   encounters: {
-    normal: { type: Number, default: 0 },
-    shiny: { type: Number, default: 0 },
+    male_normal: { type: Number, default: 0 },
+    male_shiny: { type: Number, default: 0 },
+    female_normal: { type: Number, default: 0 },
+    female_shiny: { type: Number, default: 0 },
   },
 
   catches: {
-    normal: { type: Number, default: 0 },
-    shiny: { type: Number, default: 0 },
+    male_normal: { type: Number, default: 0 },
+    male_shiny: { type: Number, default: 0 },
+    female_normal: { type: Number, default: 0 },
+    female_shiny: { type: Number, default: 0 },
   },
 
   candies: {
