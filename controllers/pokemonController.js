@@ -17,15 +17,15 @@ exports.createPokemonStatus = async (req, res) => {
     }
 
     if (pokedex_id < 1 || pokedex_id > 151) {
-      return res.status(400).json({ 
-        error: "Pokémon outside Kanto are yet to be available" 
+      return res.status(400).json({
+        error: "Pokémon outside Kanto are yet to be available"
       });
     }
 
     // Check if a status already exists for this user and pokedex_id:
-    const existingStatus = await pokemonStatus.findOne({ 
-      pokedex_id: pokedex_id, 
-      user: req.body.userId 
+    const existingStatus = await pokemonStatus.findOne({
+      pokedex_id: pokedex_id,
+      user: req.body.userId
     });
 
     if (existingStatus) {
@@ -104,12 +104,10 @@ exports.newPokemonEncounter = async (req, res) => {
     }
 
     // Construct the encounter and catch keys based on gender and shiny status
-    const encounterKey = `${gender ? "male" : "female"}_${
-      shiny ? "shiny" : "normal"
-    }`;
-    const catchKey = `${gender ? "male" : "female"}_${
-      shiny ? "shiny" : "normal"
-    }`;
+    const encounterKey = `${gender ? "male" : "female"}_${shiny ? "shiny" : "normal"
+      }`;
+    const catchKey = `${gender ? "male" : "female"}_${shiny ? "shiny" : "normal"
+      }`;
 
     // Update encounters and catches
     status.encounters[encounterKey] = true;
