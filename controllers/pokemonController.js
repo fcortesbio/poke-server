@@ -62,33 +62,30 @@ exports.createPokemonStatus = async (req, res) => {
 };
 
 // Export controller for registering a new Pokemon encounter
+// Export controller for registering a new Pokemon encounter
 exports.newPokemonEncounter = async (req, res) => {
   try {
-    const { pokedex_id, isShiny, isCatch } = req.body;
-    const status = await pokemonStatus.findOne({
-      pokedex_id,
-      user: req.body.userId,
-    });
+    const { pokedex_id, shiny, gender, isCatch } = req.body; // Get gender from request
+    const status = await pokemonStatus.findOne({ pokedex_id, user: req.body.userId });
 
     if (!status) {
-      return res
-        .status(404)
-        .json({ message: "Pokemon not found, create a new status first." });
+      return res.status(404).json({ message: "Pokemon not found, create a new status first." });
     }
 
-    // Update encounters and catches based on the request
-    if (isShiny) {
-      status.encounters.shiny += 1;
-      if (isCatch) status.catches.shiny += 1;
-    } else {
-      status.encounters.normal += 1;
-      if (isCatch) status.catches.normal += 1;
+    // Construct the encounter and catch keys based on gender and shiny status
+    const encounterKey = `${gender ? 'male' : 'female'}_${shiny ? 'shiny' : 'normal'}`;
+    const catchKey = `${gender ? 'male' : 'female'}_${shiny ? 'shiny' : 'normal'}`;
+
+    // Update encounters and catches
+    status.encounters[encounterKey] = true; 
+    status.encounters.counter += 1; // Increment total encounter counter
+    if (isCatch) {
+      status.catches[catchKey] = true;
+      status.catches.counter += 1; // Increment total catch counter
     }
 
-    await status.save(); // Save the updated document
-    res
-      .status(200)
-      .json({ message: "Encounter registered successfully", status });
+    await status.save();
+    res.status(200).json({ message: "Encounter registered successfully", status });
   } catch (err) {
     console.error(`Unable to register Pokemon encounter: ${err}`);
     res.status(500).json({ err });
