@@ -29,17 +29,19 @@ exports.createPokemonStatus = async (req, res) => {
       pokedex_id: pokedex_id,
 
       encounters: {
-        male_normal: req.body.maleNormalEncounters || 0,
-        male_shiny: req.body.maleShinyEncounters || 0,
-        female_normal: req.body.femaleNormalEncounters || 0,
-        female_shiny: req.body.femaleShinyEncounters || 0,
+        male_normal: req.body.maleNormalEncounters || false,
+        male_shiny: req.body.maleShinyEncounters || false,
+        female_normal: req.body.femaleNormalEncounters || false,
+        female_shiny: req.body.femaleShinyEncounters || false,
+        counter: 0,
       },
 
       catches: {
-        male_normal: req.body.maleNormalCatches || 0,
-        male_shiny: req.body.maleShinyCatches || 0,
-        female_normal: req.body.femaleNormalCatches || 0,
-        female_shiny: req.body.femaleShinyCatches || 0,
+        male_normal: req.body.maleNormalCatches || false,
+        male_shiny: req.body.maleShinyCatches || false,
+        female_normal: req.body.femaleNormalCatches || false,
+        female_shiny: req.body.femaleShinyCatches || false,
+        counter: 0,
       },
 
       candies: req.body.candies || 0,
