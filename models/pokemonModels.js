@@ -2,26 +2,32 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PokemonSchema = new Schema({
-  pokemon_id: {
+  pokedex_id: {
     type: Number,
     required: true,
     unique: true,
   },
 
-  encounter: {
-    type: Boolean,
-    default: true,
+  encounters: {
+    normal: { type: Number, default: 0 },
+    shiny: { type: Number, default: 0 },
   },
 
-  catch: {
-    type: Boolean,
-    default: false,
+  catches: {
+    normal: { type: Number, default: 0 },
+    shiny: { type: Number, default: 0 },
   },
 
-  team_member: {
-    type: Boolean,
-    default: false,
+  candies: {
+    type: Number,
+    default: 0,
+  },
+
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
 });
 
-module.exports = mongoose.model("pokemonStatus", PokemonSchema);
+module.exports = mongoose.model("PokemonStatus", PokemonSchema);

@@ -94,14 +94,16 @@ async function startServer() {
   validateConfig();
   await connectToDatabase();
   app.listen(PORT, () => {
-    console.log(`Server listening on port: ${PORT}`);
+    console.log(`Server listening on: http://127.0.0.1:${PORT}`);
     scheduleRouteCheck();
   });
 }
 
 // -- Graceful Shutdown --
 async function gracefulShutdown(signal) {
-  console.log(`Received ${signal}. Closing MongoDB connection and shutting down server...`);
+  console.log(
+    `Received ${signal}. Closing MongoDB connection and shutting down server...`
+  );
   try {
     await mongoose.connection.close();
     console.log("MongoDB connection closed.");
