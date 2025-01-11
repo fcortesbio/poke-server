@@ -10,21 +10,29 @@ exports.test = (req, res) => {
 // Export controller for creating a new pokemonStatus (CREATE)
 exports.createPokemonStatus = async (req, res) => {
   try {
+    // Input validation:
     const pokedex_id = parseInt(req.body.pokedex_id);
     if (isNaN(pokedex_id)) {
-      return res
-      .status(400)
-      .json({ error: "Invalid pokedex_id" });
+      return res.status(400).json({ error: "Invalid pokedex_id" });
     }
 
     if (pokedex_id < 1 || pokedex_id > 151) {
-      return res
-      .status(400)
-      .json({error: "Pokémon outside Kanto are yet to be available",
+      return res.status(400).json({ 
+        error: "Pokémon outside Kanto are yet to be available" 
       });
     }
 
-    // Create a new pokemonStatus document using data from the request body
+    // Check if a status already exists for this user and pokedex_id:
+    const existingStatus = await pokemonStatus.findOne({ 
+      pokedex_id: pokedex_id, 
+      user: req.body.userId 
+    });
+
+    if (existingStatus) {
+      return res.status(409).json({ error: "Pokémon status already exists" });
+    }
+
+    // Create a new pokemonStatus document:
     const status = await pokemonStatus.create({
       pokedex_id: pokedex_id,
 
@@ -45,20 +53,15 @@ exports.createPokemonStatus = async (req, res) => {
       },
 
       candies: req.body.candies || 0,
-
       user: req.body.userId,
     });
 
     res.status(201).json(status);
-    console.log(
-      `Created pokemonStatus for: Pokédex ID: ${req.body.pokedex_id}`
-    );
+    console.log(`Created pokemonStatus for: Pokédex ID: ${req.body.pokedex_id}`);
+
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ error: "Pokémon Status already exists" });
-    }
     console.error(`Can't create Pokémon Status: ${err}`);
-    res.status(500).json({ err });
+    res.status(500).json({ error: err.message }); // Send only the error message
   }
 };
 
