@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev" : "nodemon --watch src index.js",
-    "debug" : "nodemon --inspect index.js", 
+    "dev": "nodemon --watch src index.js",
+    "debug": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/fcortesbio/poke-server#readme",
   "description": "Poke-Server is a JavaScript-based server application that provides an API for accessing Pokémon data.",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
