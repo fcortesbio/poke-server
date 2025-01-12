@@ -1,58 +1,75 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { required } = require("joi");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
 
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
 
   password: {
     type: String,
-    required: true,
+    required: true
+  },
+
+  birthday: {
+    type: Date, 
+    required: false
+  },
+
+  country: {
+    type: String, 
+    required: false
   },
 
   roles: {
     type: [String],
     default: ["trainer"],
+    required: true
   },
 
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
 
   updatedAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
+  },
+
+  lastLogin: {
+    type: Date,
+    default: Date.now
   },
 
   isVerified: {
     type: Boolean,
-    default: false,
+    default: false
   },
 
   verificationToken: {
     type: String,
-    default: null,
+    default: null
   },
 
   passwordResetToken: {
     type: String,
-    default: null,
+    default: null
   },
 
   passwordResetExpires: {
     type: Date,
-    default: null,
+    default: null
   }
 });
 
