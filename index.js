@@ -25,43 +25,29 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 let currentRoute = getRouteNumber();
 
 // -- Routes --
+app.get("/", (req, res) => res.status(200).send("Hello, World!")); // testing route to Home
+app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // expose route to server health
+app.get("/here", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current 
 
-// Expose testing root route
-app.get("/", (req, res) => {
-  res.status(200).send("Hello, World!");
-  console.log("Successfully reached Home.");
-});
-
-// Expose current map-route via API
-app.get("/map_rt", (req, res) => {
-  res.status(200).json({ route: currentRoute });
-  console.log(`Returned route number: ${currentRoute} to client.`);
-});
-
-// Link to external route handlers
-app.use("/api/pokedex", pokemonRouter); // connection with Pokedex
+// Route handlers
+app.use("/api/pokedex", pokemonRouter); // connection with pokemonRouter
 app.use("/api/user", userRouter) // connection with userRouter
-
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP" });
-  console.log("Successfully checked server health.");
-});
 
 // -- Error Handling --
 app.use((req, res, next) => {
-  res.status(404).send("Resource not found");
+  res.status(404).send("Ooops! Resource not found");
 });
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Internal server error");
+  res.status(500).send("Ooops! Internal server error");
 });
 
 // -- MongoDB connection --
 async function connectToDatabase() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Connected to MongoDB cluster");
+    console.log("Connected to MongoDB");
   } catch (err) {
     console.error("MongoDB connection failed:", err);
   }
