@@ -6,6 +6,7 @@ const envSchema = joi
   .object({
     MONGODB_URI: joi.string().uri().required(),
     JWT_SECRET: joi.string().required(),
+    SESSION_SECRET: joi.string().required(),
     PORT: joi.number().port().default(3000),
     // more env vars can be added here
   })

@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Import the controller functions from pokemonController
 const {
-  test,
+  pokedex,
   createPokedexEntry,
   getEntryById,
   newPokemonEncounter,
@@ -11,13 +11,10 @@ const {
 } = require("../controllers/pokemonController");
 
 // Define the main API route (GET request to '/')
-router.get("/", (req, res) => {
-  res.status(200).send("Hello, Router!");
-  console.log("Successfully reached Routes");
-});
+router.get("/", (req, res) => res.status(200).send("Hello, Pokedex!"));
 
 // Define routes to controller functions
-router.get("/test", test); // test route connection to controllers
+router.get("/test", pokedex); // test route connection to controllers
 router.post("/create", createPokedexEntry); // Route to create a brand new pokemon status
 router.get("/entryById/:pokedex_id", getEntryById); // Route to get the status of a specific Pokémon
 router.post("/encounter", newPokemonEncounter); // Route to register a new Pokémon encounter

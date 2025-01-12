@@ -11,7 +11,8 @@ require("dotenv").config();
 const app = express();
 
 const getRouteNumber = require("./utils/getMapRouteNumber");
-const pokemonRouter = require("./routes/pokemonRouter");
+const pokemonRouter = require("./routes/pokemonRouter")
+
 const userRouter = require("./routes/userRouter");
 const { validateEnv } = require("./validators/validation");
 
@@ -22,6 +23,9 @@ app.use(express.json());
 app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
 app.use(cors());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
+
+secret = process.env.SESSION_SECRET
+
 app.use(
   session({
     secret: secret,
@@ -36,13 +40,11 @@ let currentRoute = getRouteNumber();
 // -- Routes --
 app.get("/", (req, res) => res.status(200).send("Hello, World!")); // testing route to Home
 app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // expose route to server health
-app.get("/here", (req, res) =>
-  res.status(200).json({ mapRoute: currentRoute })
-); // expose route to check current
+app.get("/here", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current
 
 // Route handlers
 app.use("/api/pokedex", pokemonRouter); // connection with pokemonRouter
-app.use("/api/user", userRouter); // connection with userRouter
+app.use("/api/users", userRouter); // connection with userRouter
 
 // -- Error Handling --
 app.use((req, res, next) => {
