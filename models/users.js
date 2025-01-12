@@ -22,13 +22,11 @@ const userSchema = new Schema({
   },
 
   birthday: {
-    type: Date, 
-    required: false
+    type: Date
   },
 
   country: {
-    type: String, 
-    required: false
+    type: String
   },
 
   roles: {
