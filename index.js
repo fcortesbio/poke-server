@@ -40,7 +40,8 @@ app.get("/route", (req, res) => {
   console.log(`Returned route number: ${currentRoute} to client.`);
 });
 
-app.use("/api/pokemon", pokemonRouter);
+app.use("/pokedex/entries", pokemonRouter); // connection with Pokedex
+app.use("/users/auth") // connection with Auth
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
