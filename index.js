@@ -10,9 +10,10 @@ require("dotenv").config();
 
 const app = express();
 
-const getRouteNumber = require("./utils/getMapRouteNumber");
-const pokemonRouter = require("./routes/pokemonRouter")
-
+const {
+  getRouteNumber,
+  scheduleRouteCheck,
+} = require("./utils/getMapRouteNumber"); // Import both functions
 const userRouter = require("./routes/userRouter");
 const { validateEnv } = require("./validators/validation");
 
@@ -24,11 +25,9 @@ app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
 app.use(cors());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 
-secret = process.env.SESSION_SECRET
-
 app.use(
   session({
-    secret: secret,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
   })
@@ -37,14 +36,12 @@ app.use(
 // Global variable to store the current route number
 let currentRoute = getRouteNumber();
 
-// -- Routes --
-app.get("/", (req, res) => res.status(200).send("Hello, World!")); // testing route to Home
+// -- Public Routes --
 app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // expose route to server health
-app.get("/here", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current
+app.get("/map", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current
 
-// Route handlers
-app.use("/api/pokedex", pokemonRouter); // connection with pokemonRouter
-app.use("/api/users", userRouter); // connection with userRouter
+// -- User-tied route handlers --
+app.use("/users", userRouter); // connection with userRouter
 
 // -- Error Handling --
 app.use((req, res, next) => {
@@ -66,27 +63,6 @@ async function connectToDatabase() {
   }
 }
 
-// -- Periodic Map Route check --
-function scheduleRouteCheck() {
-  console.log(`Current map route number: ${currentRoute}`);
-
-  const checkAndLogRoute = () => {
-    const newRoute = getRouteNumber();
-    if (newRoute !== currentRoute) {
-      currentRoute = newRoute;
-      console.log(`Route changed to: ${currentRoute}`);
-    }
-  };
-
-  setInterval(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    if (hours === 0 || hours === 6 || hours === 12 || hours === 18) {
-      checkAndLogRoute();
-    }
-  }, 3600000); // Check every hour
-}
-
 // -- Start the Server --
 async function startServer() {
   validateEnv(); // This will validate process.env and exit if there are errors
@@ -97,7 +73,7 @@ async function startServer() {
 
   app.listen(port, () => {
     console.log(`Server listening on: http://127.0.0.1:${port}`);
-    scheduleRouteCheck();
+    scheduleRouteCheck(currentRoute); // Pass currentRoute to scheduleRouteCheck
   });
 }
 
@@ -120,5 +96,4 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 // Start the server
-// console.log(process.env)
 startServer();
