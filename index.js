@@ -5,19 +5,15 @@ const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
-const path = require("path")
 require("dotenv").config();
 
 const getRouteNumber = require("./getMapRouteNumber");
 const pokemonRouter = require("./routes/pokemonRouter");
-
+const userRouter = require("./routes/userRouter");
+const { validateEnv } = require("./validators/validation");
 const app = express();
-const PORT = process.env.PORT ?? 3000;
-
-app.set("port", PORT);
 
 // -- Middleware --
-app.use(express.urlencoded({ extended: true })) // ?
 app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
@@ -29,19 +25,22 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 let currentRoute = getRouteNumber();
 
 // -- Routes --
+
+// Expose testing root route
 app.get("/", (req, res) => {
   res.status(200).send("Hello, World!");
   console.log("Successfully reached Home.");
 });
 
-// Expose current route via API
-app.get("/route", (req, res) => {
+// Expose current map-route via API
+app.get("/map_rt", (req, res) => {
   res.status(200).json({ route: currentRoute });
   console.log(`Returned route number: ${currentRoute} to client.`);
 });
 
-app.use("/pokedex/entries", pokemonRouter); // connection with Pokedex
-app.use("/users/auth") // connection with Auth
+// Link to external route handlers
+app.use("/api/pokedex", pokemonRouter); // connection with Pokedex
+app.use("/api/user", userRouter) // connection with userRouter
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
@@ -55,14 +54,8 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).send("Internal server error");
 });
-
-function validateConfig() {
-  if (!process.env.MONGODB_URI) {
-    throw new Error("Missing MONGODB_URI environment variable");
-  }
-}
 
 // -- MongoDB connection --
 async function connectToDatabase() {
@@ -97,10 +90,14 @@ function scheduleRouteCheck() {
 
 // -- Start the Server --
 async function startServer() {
-  validateConfig();
-  await connectToDatabase();
-  app.listen(PORT, () => {
-    console.log(`Server listening on: http://127.0.0.1:${PORT}`);
+  validateEnv(); // This will validate process.env and exit if there are errors
+  await connectToDatabase(); 
+
+  // Get the validated PORT from the environment variables
+  const port = process.env.PORT; 
+
+  app.listen(port, () => {
+    console.log(`Server listening on: http://127.0.0.1:${port}`);
     scheduleRouteCheck();
   });
 }
