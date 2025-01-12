@@ -22,6 +22,8 @@
   "homepage": "https://github.com/fcortesbio/poke-server#readme",
   "description": "Poke-Server is a JavaScript-based server application that provides an API for accessing Pokémon data.",
   "dependencies": {
+    "@hapi/joi-date": "^2.0.1",
+    "@joi/date": "^2.1.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
