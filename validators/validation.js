@@ -6,7 +6,7 @@ const envSchema = joi.object({
   MONGODB_URI: joi.string().uri().required(),
   PORT: joi.number().port().default(3000),
   // more env vars can be added here
-});
+}).unknown(true);
 
 // validation schema for user registration
 const registerSchema = joi.object({
@@ -26,12 +26,12 @@ const registerSchema = joi.object({
 
 // validation schema for username
 const usernameSchema = joi.object({
-  username: joi.string(6).min(25).alphanum().required,
+  username: joi.string().min(6).max(25).alphanum().required(), 
 });
 
 // validation schema for password (asked once username is found)
 const passwordSchema = joi.object({
-  password: joi.string(8).required(),
+  password: joi.string().min(8).required(), 
 });
 
 const validateEnv = (data) => {

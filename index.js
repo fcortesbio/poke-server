@@ -121,4 +121,5 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 // Start the server
+// console.log(process.env)
 startServer();
