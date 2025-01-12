@@ -31,8 +31,8 @@ const userSchema = new Schema({
   },
 
   updatedAt: {
-    type: Date.now,
-    default: null,
+    type: Date,
+    default: Date.now,
   },
 
   isVerified: {
