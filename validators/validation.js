@@ -14,7 +14,7 @@ const envSchema = joi
 
 // validation schema for user registration
 const registerSchema = joi.object({
-  username: joi.string().min(6).max(25).alphanum().required(),
+  username: joi.string().min(6).max(25).regex(/^[a-zA-Z0-9_]+$/).required(),
   email: joi.string().email().required(),
   password: joi
     .string()
