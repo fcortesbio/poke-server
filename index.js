@@ -5,13 +5,15 @@ const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
 require("dotenv").config();
+
+const app = express();
 
 const getRouteNumber = require("./getMapRouteNumber");
 const pokemonRouter = require("./routes/pokemonRouter");
 const userRouter = require("./routes/userRouter");
 const { validateEnv } = require("./validators/validation");
-const app = express();
 
 // -- Middleware --
 app.use(cookieParser());
@@ -20,6 +22,13 @@ app.use(express.json());
 app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
 app.use(cors());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
+app.use(
+  session({
+    secret: secret,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Global variable to store the current route number
 let currentRoute = getRouteNumber();
@@ -27,11 +36,13 @@ let currentRoute = getRouteNumber();
 // -- Routes --
 app.get("/", (req, res) => res.status(200).send("Hello, World!")); // testing route to Home
 app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // expose route to server health
-app.get("/here", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current 
+app.get("/here", (req, res) =>
+  res.status(200).json({ mapRoute: currentRoute })
+); // expose route to check current
 
 // Route handlers
 app.use("/api/pokedex", pokemonRouter); // connection with pokemonRouter
-app.use("/api/user", userRouter) // connection with userRouter
+app.use("/api/user", userRouter); // connection with userRouter
 
 // -- Error Handling --
 app.use((req, res, next) => {
@@ -77,10 +88,10 @@ function scheduleRouteCheck() {
 // -- Start the Server --
 async function startServer() {
   validateEnv(); // This will validate process.env and exit if there are errors
-  await connectToDatabase(); 
+  await connectToDatabase();
 
   // Get the validated PORT from the environment variables
-  const port = process.env.PORT; 
+  const port = process.env.PORT;
 
   app.listen(port, () => {
     console.log(`Server listening on: http://127.0.0.1:${port}`);
