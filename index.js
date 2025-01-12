@@ -10,7 +10,7 @@ require("dotenv").config();
 
 const app = express();
 
-const getRouteNumber = require("./getMapRouteNumber");
+const getRouteNumber = require("./utils/getMapRouteNumber");
 const pokemonRouter = require("./routes/pokemonRouter");
 const userRouter = require("./routes/userRouter");
 const { validateEnv } = require("./validators/validation");
