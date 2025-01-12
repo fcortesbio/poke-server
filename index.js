@@ -4,9 +4,12 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const cookieParser = require("cookie-parser");
+const path = require("path")
 require("dotenv").config();
+
+const getRouteNumber = require("./getMapRouteNumber");
 const pokemonRouter = require("./routes/pokemonRouter");
-const getRouteNumber = require("./services/getMapRouteNumber");
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -14,6 +17,8 @@ const PORT = process.env.PORT ?? 3000;
 app.set("port", PORT);
 
 // -- Middleware --
+app.use(express.urlencoded({ extended: true })) // ?
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));

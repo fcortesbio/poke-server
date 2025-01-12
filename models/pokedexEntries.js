@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PokemonSchema = new Schema({
+const pokedexEntrySchema = new Schema({
   pokedex_id: {
     type: Number,
     required: true,
@@ -13,15 +13,15 @@ const PokemonSchema = new Schema({
     male_shiny: { type: Boolean, default: false },
     female_normal: { type: Boolean, default: false },
     female_shiny: { type: Boolean, default: false },
-    counter : {type : Number, default: 0}
+    counter: { type: Number, default: 0 }
   },
 
   catches: {
     male_normal: { type: Boolean, default: false },
     male_shiny: { type: Boolean, default: false },
     female_normal: { type: Boolean, default: false },
-    female_shiny: { type: Boolean, default: false }, 
-    counter : {type : Number, default: 0}
+    female_shiny: { type: Boolean, default: false },
+    counter: { type: Number, default: 0 }
   },
 
   candies: {
@@ -36,4 +36,4 @@ const PokemonSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("PokemonStatus", PokemonSchema);
+module.exports = mongoose.model("pokedexEntries", pokedexEntrySchema);
