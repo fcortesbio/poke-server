@@ -54,6 +54,11 @@ const userSchema = new Schema({
     type: Date,
     default: null,
   },
+
+//   pokedexEntries: {
+//     type: Object,
+//     default: null
+//   }
 });
 
 // Hash the password before saving
@@ -77,4 +82,13 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   }
 };
 
-module.exports = mongoose.model("userAuth", userSchema);
+userSchema.methods.toJSON = function() {
+    const user = this.toObject();
+    delete user.password;
+    delete user.verificationToken; 
+    delete user.passwordResetToken;
+    delete user.passwordResetExpires;
+    return user;
+}
+
+module.exports = mongoose.model("User", userSchema);
