@@ -9,7 +9,7 @@ const generateToken = (user) => {
         roles: user.roles
     };
 
-    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "30m"});
+    return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES});
 }; 
 
 const authenticateToken = (req, res, next) => {
