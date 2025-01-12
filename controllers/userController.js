@@ -20,58 +20,48 @@ const registerUser = async (req, res) => {
   }
 };
 
-const checkUsername = async (req, res) => { 
+const checkUsername = async (req, res) => {
   const { error, value } = validateUsername(req.body.username);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
   try {
-    const user = await User.findOne({ username: value }); 
+    const user = await User.findOne({ username: value });
     if (!user) {
-      return res.status(404).json({ error: "Username not found" }); 
+      return res.status(404).json({ error: "Username not found" });
     }
     req.session.username = value;
-    res.json({ message: "Username found" }); 
+    res.json({ message: "Username found" });
   } catch (err) {
-    console.error(err); 
-    res.status(500).json({ error: "Internal server error" }); 
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 const checkPassword = async (req, res) => {
-  const { error, value } = validatePassword(req.body.password); // Call validatePassword only once  
-  console.log(`Marker 7 -> Validation results object:`, { error, value }); // Log the result directly
-  if (error) { 
+  const { error, value } = validatePassword(req.body.password);
+  if (error) {
     return res.status(400).json({ error: error.details[0].message });
-  } 
+  }
   try {
-    console.log("username from session: " + req.session.username);
-    const user = await User.findOne({ username: req.session.username }); // Separate the query
-    console.log("Found user:", user); // Log the user object
+    const user = await User.findOne({ username: req.session.username });
 
-    if (!user) return res.status(404).json({ error: error.details[0].message })
-    
-    console.log("reached this point!")
-    console.log("HTTPr password:", req.body.password)
+    if (!user) return res.status(404).json({ error: error.details[0].message });
+
     const isMatch = await user.comparePassword(req.body.password);
-    
-    console.log("Marker 9: Compare password", isMatch);
-    console.log("reached this point!")
+
     if (!isMatch) return res.status(401).json({ error: "Incorrect access" });
-    
-    // record last login event
+
     user.lastLogin = Date.now();
     await user.save();
-    // store userId in session    
+
     req.session.userId = user.id;
-    // generate and export JWT token and produce response
+
     const token = generateToken(user);
     res.cookie("token", token);
-    console.log("Reached this point!")
-    res.json({message: "User logged in"});
-    
+    res.json({ message: "User logged in" });
   } catch (err) {
-    console.error({error: err.message})
+    console.error({ error: err.message });
     res.status(500).json({ error: err.message });
   }
 };
@@ -83,7 +73,7 @@ const logoutUser = async (req, res) => {
         console.error(`Error destroying session: ${err}`);
         return res.status(500).json({ error: "Logout failed" });
       }
-      res.clearCookie("token"); // clear jwt token
+      res.clearCookie("token");
       res.json({ message: "User logged out succesfully" });
     });
   } catch (err) {
@@ -96,36 +86,24 @@ const getUserProfile = async (req, res) => {
   try {
     const userId = req.session.userId;
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({error: "User not found"});
-    
+    if (!user) return res.status(404).json({ error: "User not found" });
+
     const profile = {
-      username : user.username,
-      email : user.email, 
-      roles : user.roles,
+      username: user.username,
+      email: user.email,
+      roles: user.roles,
       birthday: user.birthday,
       country: user.country,
-      createdAt : user.createdAt,
-      lastLogin : user.lastLogin,
-      // encountered: user.encountered we'll see later 
-      // catched: user.catched we'll see later 
-    }
-    
-    res.json({profile}); /// what data should we filter from profile?
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin,
+    };
 
+    res.json({ profile });
   } catch (err) {
     console.error(err);
-    res.status(500).json({error: "Failed to fetch user profile"})
+    res.status(500).json({ error: "Failed to fetch user profile" });
   }
-}
-
-// const updateUserPassword = 
-
-// const updateUserEmail = 
-
-// const updateBirthday = 
-
-// const updateCountry = 
-
+};
 
 module.exports = {
   registerUser,
