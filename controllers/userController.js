@@ -165,7 +165,7 @@ const updateCountry = async (req, res) => {
   );
 };
 
-const updatePassword = async (req, req) => {
+const updatePassword = async (req, res) => {
   try {
     const userId = req.session.userId;
     const { currentPassword, newPassword } = req.body;
@@ -183,6 +183,32 @@ const updatePassword = async (req, req) => {
     await user.save();
     res.json({ message: "Updated password" });
   } catch (err) {}
+};
+
+const deleteUserAccount = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const currentPassword = req.body.password;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return res.status(401).json({});
+    async () => await User.findByIdAndDelete(userId);
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(`Error destroying session`);
+        return res
+          .status(500)
+          .json({ error: "Account deleted, but logout failed" });
+      }
+      res.clearCookie("token");
+      res.json({ message: "Account deleted succesfully" });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete account" });
+  }
 };
 
 module.exports = {
