@@ -71,19 +71,15 @@ const validateEnv = () => {
 };
 
 const validateUsername = (data) => {
-  if (data === "Professor Oak"){
-    return {value : data}
+  if (data === "Professor Oak") {
+    return { value: data };
   }
   const { error, value } = usernameSchema.validate(data);
   return { error, value };
 };
 
-
 const validatePassword = (data) => {
   const { error, value } = passwordSchema.validate(data);
-  console.log("---Running `validatePassword`---")
-  console.log("Error: ", error)
-  console.log("Value: ", value) 
   return { error, value };
 };
 

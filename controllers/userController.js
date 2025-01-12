@@ -26,11 +26,12 @@ const checkUsername = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
   try {
-    const user = await User.findOne({ username: value });
+    const user = await User.findOne({ username: value }, "_id");
     if (!user) {
       return res.status(404).json({ error: "Username not found" });
     }
-    req.session.username = value;
+
+    req.session.userId = user._id;
     res.json({ message: "Username found" });
   } catch (err) {
     console.error(err);
@@ -44,20 +45,18 @@ const checkPassword = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
   try {
-    const user = await User.findOne({ username: req.session.username });
-
-    if (!user) return res.status(404).json({ error: error.details[0].message });
-
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Username not found in session" });
+    }
+    const user = await User.findById(userId, "password"); // Fetch only the password
+    if (!user) return res.status(404).json({ error: "User not found" });
     const isMatch = await user.comparePassword(req.body.password);
-
     if (!isMatch) return res.status(401).json({ error: "Incorrect access" });
-
-    user.lastLogin = Date.now();
-    await user.save();
-
-    req.session.userId = user.id;
-
-    const token = generateToken(user);
+    const completeUser = await User.findById(userId);
+    completeUser.lastLogin = Date.now();
+    await completeUser.save();
+    const token = generateToken(completeUser);
     res.cookie("token", token);
     res.json({ message: "User logged in" });
   } catch (err) {
