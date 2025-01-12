@@ -4,9 +4,12 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const cookieParser = require("cookie-parser");
+const path = require("path")
 require("dotenv").config();
+
+const getRouteNumber = require("./getMapRouteNumber");
 const pokemonRouter = require("./routes/pokemonRouter");
-const getRouteNumber = require("./services/getMapRouteNumber");
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -14,6 +17,8 @@ const PORT = process.env.PORT ?? 3000;
 app.set("port", PORT);
 
 // -- Middleware --
+app.use(express.urlencoded({ extended: true })) // ?
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
@@ -94,14 +99,16 @@ async function startServer() {
   validateConfig();
   await connectToDatabase();
   app.listen(PORT, () => {
-    console.log(`Server listening on port: ${PORT}`);
+    console.log(`Server listening on: http://127.0.0.1:${PORT}`);
     scheduleRouteCheck();
   });
 }
 
 // -- Graceful Shutdown --
 async function gracefulShutdown(signal) {
-  console.log(`Received ${signal}. Closing MongoDB connection and shutting down server...`);
+  console.log(
+    `Received ${signal}. Closing MongoDB connection and shutting down server...`
+  );
   try {
     await mongoose.connection.close();
     console.log("MongoDB connection closed.");
