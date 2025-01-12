@@ -13,8 +13,8 @@ const { authenticateToken } = require("../middleware/cookieJwtAuth");
 router.get("/", (req, res) => res.status(200).send("Hello, User!"));
 
 router.post("/signup", registerUser); // sign up a new user (CREATE)
-router.post("/login/username", checkUsername); // check username
-router.post("/login/password", checkPassword); // check username+password
+router.post("/login/", checkUsername); // check username
+router.post("/login/pass", checkPassword); // check username+password
 
 // --- JWT protected routes:
 router.get("profile/", authenticateToken, (req, res) => {

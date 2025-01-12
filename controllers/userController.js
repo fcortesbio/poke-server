@@ -22,15 +22,20 @@ const registerUser = async (req, res) => {
 
 const checkUsername = async (req, res) => {
   const { error, value } = validateUsername(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   try {
     const user = await User.findOne({ username: value.username });
-    if (!user) return res.status(404).json({ error: error.details[0].message });
+    if (!user) {
+      return res.status(404).json({ error: "Username not found" }); // More specific error message
+    }
     req.session.username = value.username;
-    res.json({ message: "Username found and stored" });
+    res.json({ message: "Username found and cached" }); // Corrected spelling
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err); // Log the error for debugging
+    res.status(500).json({ error: "Internal server error" }); // Generic error message for security
   }
 };
 
@@ -55,7 +60,7 @@ const checkPassword = async (req, res) => {
     const token = generateToken(user);
     res.cookie("token", token);
     res.json({ message: "User logged in" });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
