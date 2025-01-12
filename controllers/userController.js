@@ -3,6 +3,10 @@ const {
   validateRegistration,
   validateUsername,
   validatePassword,
+  emailSchema,
+  usernameSchema,
+  countrySchema,
+  passwordSchema,
 } = require("../validators/validation");
 
 const { generateToken } = require("../middleware/cookieJwtAuth");
@@ -104,10 +108,91 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+const updateUserEmail = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const newEmail = req.body.email;
+
+    // validate the new email
+    const { error, value } = emailSchema.validate(newEmail);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    // find the user and update the email
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { email: value },
+      { new: true, runValidators: true }
+    );
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "Email address updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update email" });
+  }
+};
+
+const updateUsername = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const newUsername = req.body.username;
+    // validate username
+    const { error, value } = usernameSchema.validate(newUsername);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+    // find the user and update the username
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { username: value },
+      { new: true, runValidators: true }
+    );
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "Username updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update username" });
+  }
+};
+
+const updateCountry = async (req, res) => {
+  const userId = req.session.userId;
+  const newCountry = req.body.country;
+  const { error, value } = countrySchema.validate(newCountry);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { country: value },
+    { new: true, runValidators: true }
+  );
+};
+
+const updatePassword = async (req, req) => {
+  try {
+    const userId = req.session.userId;
+    const { currentPassword, newPassword } = req.body;
+    // validate new password
+    const { error, value } = passwordSchema.validate(newPassword);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+    // find the user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    // compare current pasword
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return res.status(401).json({ error: "Incorrect access" });
+    // update password (this will trigger our pre-save hash)
+    user.password = value;
+    await user.save();
+    res.json({ message: "Updated password" });
+  } catch (err) {}
+};
+
 module.exports = {
   registerUser,
   checkUsername,
   checkPassword,
   logoutUser,
   getUserProfile,
+  updateUserEmail,
+  updateUsername,
+  updateCountry,
+  updatePassword,
 };
