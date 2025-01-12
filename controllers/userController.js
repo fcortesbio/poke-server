@@ -1,3 +1,4 @@
+require("dotenv").config();
 const {
   validateRegistration,
   validateUsername,
@@ -10,7 +11,6 @@ const User = require("../models/users");
 const registerUser = async (req, res) => {
   const { error, value } = validateRegistration(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     const user = new User(value);
     await user.save();
@@ -59,9 +59,27 @@ const checkPassword = async (req, res) => {
 
     const token = generateToken(user);
     res.cookie("token", token);
-    res.json({ message: "User logged in" });
+    res.json({
+      message: `User logged-in. Session token expires in ${process.env.JWT_EXPIRES}`,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(`Error destroying session: ${err}`);
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.clearCookie("token"); // clear jwt token
+      res.json({ message: "User logged out succesfully" });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Logout failed" });
   }
 };
 
@@ -69,4 +87,5 @@ module.exports = {
   registerUser,
   checkUsername,
   checkPassword,
+  logoutUser,
 };
