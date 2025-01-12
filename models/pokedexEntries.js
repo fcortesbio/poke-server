@@ -13,7 +13,7 @@ const pokedexEntrySchema = new Schema({
     male_shiny: { type: Boolean, default: false },
     female_normal: { type: Boolean, default: false },
     female_shiny: { type: Boolean, default: false },
-    counter: { type: Number, default: 0 }
+    counter: { type: Number, default: 0 },
   },
 
   catches: {
@@ -21,7 +21,7 @@ const pokedexEntrySchema = new Schema({
     male_shiny: { type: Boolean, default: false },
     female_normal: { type: Boolean, default: false },
     female_shiny: { type: Boolean, default: false },
-    counter: { type: Number, default: 0 }
+    counter: { type: Number, default: 0 },
   },
 
   candies: {
@@ -33,6 +33,7 @@ const pokedexEntrySchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+    index: true,
   },
 });
 
