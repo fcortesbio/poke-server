@@ -221,4 +221,5 @@ module.exports = {
   updateUsername,
   updateCountry,
   updatePassword,
+  deleteUserAccount
 };

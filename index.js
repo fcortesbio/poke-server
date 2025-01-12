@@ -41,7 +41,7 @@ app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // exp
 app.get("/map", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current
 
 // -- User-tied route handlers --
-app.use("/users", userRouter); // connection with userRouter
+app.use("/", userRouter); // connection with userRouter
 
 // -- Error Handling --
 app.use((req, res, next) => {

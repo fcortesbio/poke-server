@@ -6,24 +6,37 @@ const {
   checkPassword,
   logoutUser,
   getUserProfile,
+  updateUserEmail,
+  updateUsername,
+  updateCountry,
+  updatePassword,
+  deleteUserAccount, 
 } = require("../controllers/userController");
 const { authenticateToken } = require("../middleware/cookieJwtAuth");
+const pokedex = require("../routes/pokemonRouter");
 
-// -- User Authentication Handling routes: --
+// testing route
+// Authentication and sign up 
+router.post("/signup", registerUser);
+router.post("/intro", checkUsername);
+router.post("/login", checkPassword);
+router.post("/logout", logoutUser);
 
-// Define the main API route (GET request to '/')
-router.get("/", (req, res) => res.status(200).send("Hello, User!"));
-
-router.post("/signup", registerUser); // sign up a new user (CREATE)
-router.post("/username", checkUsername); // check username
-router.post("/login", checkPassword); // check username+password
-router.post("/logout", logoutUser); // Logout route
-router.post("/profile", getUserProfile)
-
-// --- JWT protected routes:
-router.get("/auth", authenticateToken, (req, res) => {
+// --- JWT protected routes ---
+router.get("/:userId", authenticateToken, (req, res) => {
   res.json({ user: req.user });
-  console.log("route profile reached!");
 });
+
+router.post(":/userId/profile", authenticateToken, getUserProfile); // fetch profile details
+router.use(":/userId/pokedex/", authenticateToken, pokedex); // connection with pokemonRouter
+
+// --- User update routes (protected) ---
+router.patch('/:userId/email', authenticateToken, updateUserEmail);
+router.patch('/:userId/username', authenticateToken, updateUsername);
+router.patch('/:userId/country', authenticateToken, updateCountry);
+router.patch('/:userId/password', authenticateToken, updatePassword);
+
+// --- Account deletion route (protected) ---
+router.delete('/:userId/account', authenticateToken, deleteUserAccount);
 
 module.exports = router;
