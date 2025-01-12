@@ -89,4 +89,8 @@ module.exports = {
   validateUsername,
   validatePassword,
   validateEnv,
+  emailSchema,
+  countrySchema,
+  usernameSchema,
+  passwordSchema,
 };
