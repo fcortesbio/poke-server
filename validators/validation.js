@@ -8,7 +8,8 @@ const envSchema = joi
     JWT_SECRET: joi.string().required(),
     SESSION_SECRET: joi.string().required(),
     PORT: joi.number().port().default(3000),
-    // more env vars can be added here
+    JWT_EXPIRES: joi.string().required()
+    // ... more env vars can be added here
   })
   .unknown(true);
 
@@ -24,7 +25,7 @@ const registerSchema = joi.object({
     .required(),
   roles: joi
     .array()
-    .items(joi.string().valid("trainer", "elite", "professor"))
+    .items(joi.string().valid("trainer", "elite"))
     .default(["trainer"]),
 });
 
@@ -43,9 +44,6 @@ const validateEnv = (data) => {
   if (error) {
     console.error(`Environment variable validation error: ${error.message}`);
     process.exit(1);
-  } else {
-    const mongodbUri = envVars.MONGODB_URI;
-    const port = envVars.PORT;
   }
 };
 
