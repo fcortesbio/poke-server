@@ -33,7 +33,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.3",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "jest": "^29.7.0",
