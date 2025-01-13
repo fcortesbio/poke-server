@@ -13,9 +13,13 @@ const app = express();
 const {
   getRouteNumber,
   scheduleRouteCheck,
-} = require("./utils/getMapRouteNumber"); // Import both functions
+} = require("./utils/getMapRouteNumber"); 
 const { validateEnv } = require("./validators/validation");
 const userRouter = require("./routes/userRouter");
+const fetchRouter = require("./routes/fetchRouter"); 
+
+const { fetchPokemonAttributes } = require("./services/fetchGQL"); 
+
 
 // -- Middleware --
 app.use(cookieParser());
@@ -37,10 +41,11 @@ app.use(
 let currentRoute = getRouteNumber();
 
 // -- Public Routes --
-app.get("/map", (req, res) => res.status(200).json({ message: `Currently on route ${currentRoute}` })); // expose route to check current
+app.get("/map", (req, res) => res.status(200).json({ message: `currently on route ${currentRoute}` })); // expose route to check current
 
 // -- User-tied route handlers --
 app.use("/users", userRouter); // connection with userRouter
+app.use("/api/pokemon", fetchRouter);
 
 app.get("/", (req, res)=> { // check server Health
   res.status(200).json({status: "UP"});

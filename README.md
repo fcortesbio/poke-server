@@ -43,7 +43,7 @@ This is the backend server for a Pokemon-themed application. It provides API end
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/your-username/poke-server.git`
+1. Clone the repository: `git clone https://github.com/fcortesbio/poke-server.git`
 2. Install dependencies: `npm install`
 3. Configure environment variables (see `.env.example` for a template):
     * `MONGODB_URI`: MongoDB connection string
