@@ -1,5 +1,5 @@
 // Import pokemonStatus model
-const pokedexEntry = require("../models/pokedexEntries");
+const pokedexEntry = require("../models/pokedexSch");
 
 // Export test response to controllers;
 exports.pokedex = (req, res) => {

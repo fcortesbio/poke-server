@@ -32,11 +32,15 @@ const checkUsername = async (req, res) => {
   try {
     const user = await User.findOne({ username: value }, "_id");
     if (!user) {
+      req.session.destroy((err) => { 
+        if (err) console.error(`Error destroying session: ${err}`);
+      });
       return res.status(404).json({ error: "Username not found" });
     }
 
     req.session.userId = user._id;
     res.json({ message: "Username found" });
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
