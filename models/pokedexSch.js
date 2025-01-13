@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const pokedexEntrySchema = new Schema({
+const pokedexSch = new Schema({
   pokedex_id: {
     type: Number,
     required: true,
@@ -37,4 +37,4 @@ const pokedexEntrySchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("pokedexEntries", pokedexEntrySchema);
+module.exports = mongoose.model("pokedexEntries", pokedexSch);
