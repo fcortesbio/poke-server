@@ -13,7 +13,8 @@ const {
   deleteUserAccount, 
 } = require("../controllers/userController");
 const { authenticateToken } = require("../middleware/cookieJwtAuth");
-const pokedex = require("../routes/pokemonRouter");
+const pokedex = require("./pokedexRouter");
+const session = require("express-session");
 
 // testing route
 // Authentication and sign up 
@@ -23,20 +24,16 @@ router.post("/login", checkPassword);
 router.post("/logout", logoutUser);
 
 // --- JWT protected routes ---
-router.get("/:userId", authenticateToken, (req, res) => {
-  res.json({ user: req.user });
-});
-
-router.post(":/userId/profile", authenticateToken, getUserProfile); // fetch profile details
-router.use(":/userId/pokedex/", authenticateToken, pokedex); // connection with pokemonRouter
+router.get("/profile", authenticateToken, getUserProfile); // fetch profile details
+router.use("/pokedex/", authenticateToken, pokedex); // connection with pokemonRouter
 
 // --- User update routes (protected) ---
-router.patch('/:userId/email', authenticateToken, updateUserEmail);
-router.patch('/:userId/username', authenticateToken, updateUsername);
-router.patch('/:userId/country', authenticateToken, updateCountry);
-router.patch('/:userId/password', authenticateToken, updatePassword);
+router.patch("/email", authenticateToken, updateUserEmail);
+router.patch("/username", authenticateToken, updateUsername);
+router.patch("/country", authenticateToken, updateCountry);
+router.patch("/password", authenticateToken, updatePassword);
 
 // --- Account deletion route (protected) ---
-router.delete('/:userId/account', authenticateToken, deleteUserAccount);
+router.delete("/account", authenticateToken, deleteUserAccount);
 
 module.exports = router;
