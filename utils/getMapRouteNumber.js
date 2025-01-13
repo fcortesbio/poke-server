@@ -32,7 +32,28 @@ function getRouteNumber() {
   return routeNumber;
 }
 
-module.exports = getRouteNumber;
+// -- Periodic Map Route check --
+function scheduleRouteCheck(currentRoute) { // Accept currentRoute as an argument
+  console.log(`Current map route number: ${currentRoute}`);
+
+  const checkAndLogRoute = () => {
+    const newRoute = getRouteNumber();
+    if (newRoute !== currentRoute) {
+      currentRoute = newRoute; // Update currentRoute
+      console.log(`Route changed to: ${currentRoute}`);
+    }
+  };
+
+  setInterval(() => {
+    const now = new Date();
+    const hours = now.getHours();
+    if (hours === 0 || hours === 6 || hours === 12 || hours === 18) {
+      checkAndLogRoute();
+    }
+  }, 3600000); // Check every hour
+}
+
+module.exports = { getRouteNumber, scheduleRouteCheck }; // Export both functions
 
 if (require.main === module) {
   const currentRoute = getRouteNumber();

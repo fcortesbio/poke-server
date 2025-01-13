@@ -5,19 +5,19 @@ const morgan = require("morgan");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
-const path = require("path")
+const session = require("express-session");
 require("dotenv").config();
 
-const getRouteNumber = require("./getMapRouteNumber");
-const pokemonRouter = require("./routes/pokemonRouter");
-
 const app = express();
-const PORT = process.env.PORT ?? 3000;
 
-app.set("port", PORT);
+const {
+  getRouteNumber,
+  scheduleRouteCheck,
+} = require("./utils/getMapRouteNumber"); // Import both functions
+const { validateEnv } = require("./validators/validation");
+const userRouter = require("./routes/userRouter");
 
 // -- Middleware --
-app.use(express.urlencoded({ extended: true })) // ?
 app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
@@ -25,82 +25,59 @@ app.use(morgan("combined", { skip: (req, res) => res.statusCode < 400 }));
 app.use(cors());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 // Global variable to store the current route number
 let currentRoute = getRouteNumber();
 
-// -- Routes --
-app.get("/", (req, res) => {
-  res.status(200).send("Hello, World!");
-  console.log("Successfully reached Home.");
-});
+// -- Public Routes --
+app.get("/map", (req, res) => res.status(200).json({ message: `Currently on route ${currentRoute}` })); // expose route to check current
 
-// Expose current route via API
-app.get("/route", (req, res) => {
-  res.status(200).json({ route: currentRoute });
-  console.log(`Returned route number: ${currentRoute} to client.`);
-});
+// -- User-tied route handlers --
+app.use("/users", userRouter); // connection with userRouter
 
-app.use("/api/pokemon", pokemonRouter);
-
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP" });
-  console.log("Successfully checked server health.");
+app.get("/", (req, res)=> { // check server Health
+  res.status(200).json({status: "UP"});
+  console.log("Hello, World!")
 });
 
 // -- Error Handling --
 app.use((req, res, next) => {
-  res.status(404).send("Resource not found");
+  res.status(404).send("Ooops! Resource not found");
 });
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).send("Ooops! Internal server error");
 });
-
-function validateConfig() {
-  if (!process.env.MONGODB_URI) {
-    throw new Error("Missing MONGODB_URI environment variable");
-  }
-}
 
 // -- MongoDB connection --
 async function connectToDatabase() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Connected to MongoDB cluster");
+    console.log("Connected to MongoDB");
   } catch (err) {
     console.error("MongoDB connection failed:", err);
   }
 }
 
-// -- Periodic Map Route check --
-function scheduleRouteCheck() {
-  console.log(`Current map route number: ${currentRoute}`);
-
-  const checkAndLogRoute = () => {
-    const newRoute = getRouteNumber();
-    if (newRoute !== currentRoute) {
-      currentRoute = newRoute;
-      console.log(`Route changed to: ${currentRoute}`);
-    }
-  };
-
-  setInterval(() => {
-    const now = new Date();
-    const hours = now.getHours();
-    if (hours === 0 || hours === 6 || hours === 12 || hours === 18) {
-      checkAndLogRoute();
-    }
-  }, 3600000); // Check every hour
-}
-
 // -- Start the Server --
 async function startServer() {
-  validateConfig();
+  validateEnv(); // This will validate process.env and exit if there are errors
   await connectToDatabase();
-  app.listen(PORT, () => {
-    console.log(`Server listening on: http://127.0.0.1:${PORT}`);
-    scheduleRouteCheck();
+
+  // Get the validated PORT from the environment variables
+  const port = process.env.PORT;
+
+  app.listen(port, () => {
+    console.log(`Server listening on port: ${port}`);
+    scheduleRouteCheck(currentRoute); // Pass currentRoute to scheduleRouteCheck
   });
 }
 
