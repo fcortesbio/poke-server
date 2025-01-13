@@ -14,8 +14,8 @@ const {
   getRouteNumber,
   scheduleRouteCheck,
 } = require("./utils/getMapRouteNumber"); // Import both functions
-const userRouter = require("./routes/userRouter");
 const { validateEnv } = require("./validators/validation");
+const userRouter = require("./routes/userRouter");
 
 // -- Middleware --
 app.use(cookieParser());
@@ -37,11 +37,15 @@ app.use(
 let currentRoute = getRouteNumber();
 
 // -- Public Routes --
-app.get("/health", (req, res) => res.status(200).json({ status: "UP" })); // expose route to server health
-app.get("/map", (req, res) => res.status(200).json({ mapRoute: currentRoute })); // expose route to check current
+app.get("/map", (req, res) => res.status(200).json({ message: `Currently on route ${currentRoute}` })); // expose route to check current
 
 // -- User-tied route handlers --
-app.use("/", userRouter); // connection with userRouter
+app.use("/users", userRouter); // connection with userRouter
+
+app.get("/", (req, res)=> { // check server Health
+  res.status(200).json({status: "UP"});
+  console.log("Hello, World!")
+});
 
 // -- Error Handling --
 app.use((req, res, next) => {
@@ -72,7 +76,7 @@ async function startServer() {
   const port = process.env.PORT;
 
   app.listen(port, () => {
-    console.log(`Server listening on: http://127.0.0.1:${port}`);
+    console.log(`Server listening on port: ${port}`);
     scheduleRouteCheck(currentRoute); // Pass currentRoute to scheduleRouteCheck
   });
 }
