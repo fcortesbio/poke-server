@@ -14,7 +14,7 @@ const {
 } = require("../controllers/userController");
 const { authenticateToken } = require("../middleware/cookieJwtAuth");
 const pokedex = require("./pokedexRouter");
-const session = require("express-session");
+// const session = require("express-session"); // not used
 
 // testing route
 // Authentication and sign up 
