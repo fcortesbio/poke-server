@@ -19,8 +19,8 @@ const session = require("express-session");
 // testing route
 // Authentication and sign up 
 router.post("/signup", registerUser);
-router.post("/intro", checkUsername);
-router.post("/login", checkPassword);
+router.get("/login", checkUsername);
+router.post("/login/auth", checkPassword);
 router.post("/logout", logoutUser);
 
 // --- JWT protected routes ---
