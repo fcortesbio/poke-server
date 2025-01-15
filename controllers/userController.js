@@ -25,7 +25,14 @@ const registerUser = async (req, res) => {
 };
 
 const checkUsername = async (req, res) => {
-  const { error, value } = validateUsername(req.body.username);
+  let username = req.body.username; 
+
+  if (!username){
+    username = req.query.username;
+  }
+
+  const { error, value } = validateUsername(username);
+  
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
